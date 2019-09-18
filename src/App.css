@@ -1,33 +1,74 @@
 .App {
-  display: flex;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.App-history {
+.App-apiroot {
+  width: 400px;
+}
+
+.App-panels {
+  height: 100%;
+  display: flex;
   flex: 1;
 }
 
-.App-params {
+.App-History {
+  padding: 4px;
+  flex: 1;
+}
+
+.App-Request {
+  padding: 4px;
   flex: 2;
 }
 
-.App-results {
+.App-Request-url {
+  display: flex;
+}
+
+.App-Request-url input {
+  flex: 1;
+}
+
+.App-Response {
   flex: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.App-Response-Headers {
+  background-color: #E0E0E0;
+  padding: 8px;
+}
+
+.App-Response-Body {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .App-HistoryList {
   list-style: none;
-  padding: 8px;
+  padding: 0;
 }
 
 .App-HistoryList li {
+  margin: 4px;
   padding: 8px;
   border: 1px solid #CCC;
   display: flex;
+  cursor: pointer;
+  transition: 0.25s all;
+}
+
+.App-HistoryList li:hover {
+  background-color: #F0F0F0;
 }
 
 .App-HistoryList li.selected {
-  border-color: #999;
+  border-color: #333;
 }
 
 .App-HistoryList-endpoint {
@@ -39,11 +80,6 @@
   font-weight: bold;
 }
 
-.App-headers {
-  background-color: #E0E0E0;
-  padding: 8px;
-}
-
 .badge {
   color: white;
   border-radius: 3px;
@@ -51,5 +87,5 @@
 
 .badge-get {
   background-color: green;
-  padding: 1px 4px;
+  padding: 0px 4px 2px;
 }

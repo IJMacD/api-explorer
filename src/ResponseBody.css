@@ -1,0 +1,33 @@
+.ResponseBody-mode {
+    margin: 2px;
+}
+
+.JSONBody-object {
+    border: 1px solid #999;
+    padding: 8px;
+    margin: 8px 0;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.75);
+}
+
+.JSONBody-object dt {
+    font-weight: bold;
+    width: 120px;
+    float: left;
+}
+
+.JSONBody-object dd {
+    margin-left: 120px;
+}
+
+.JSONBody-string {
+    color: green;
+}
+
+.JSONBody-string::before,
+.JSONBody-string::after {
+    content: '"';
+}
+
+.JSONBody-number {
+    color: blue;
+}
