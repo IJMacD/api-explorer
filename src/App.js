@@ -8,10 +8,11 @@ const STORAGE_KEY = "api-explorer-saved-state";
 /**
  * @typedef QueryRecord
  * @prop {string} endpoint
- * @prop {string} method
- * @prop {number} status
- * @prop {[string,string][]} headers
+ * @prop {"GET"|"POST"|"PUT"|"DELETE"|"OPTION"} method
+ * @prop {number|"error"} status
+ * @prop {[string,string][]} headers Array of key,value tuples
  * @prop {string} body
+ * @prop {number} duration In milliseconds
  */
 
 class App extends React.Component {
@@ -32,6 +33,7 @@ class App extends React.Component {
   async sendQuery () {
     const { endpoint, method } = this.state;
     const url = this.state.apiRoot + endpoint;
+    const start = Date.now();
 
     try {
       this.setState({ loading: true });
@@ -45,7 +47,8 @@ class App extends React.Component {
           method,
           status: r.status,
           headers: [...r.headers],
-          body
+          body,
+          duration: Date.now() - start,
         }, ...this.state.history ],
         selectedIndex: 0,
       });
@@ -65,18 +68,22 @@ class App extends React.Component {
   }
 
   setSelected (index) {
-    if (index >= 0 && index < this.state.history.length) {
-      const item = this.state.history[index];
-      this.setState({
-        selectedIndex: index,
-        endpoint: item.endpoint,
-        method: item.method,
-      });
-    }
+    index = Math.max(0, Math.min(index, this.state.history.length - 1));
+    const item = this.state.history[index];
+    this.setState({
+      selectedIndex: index,
+      endpoint: item.endpoint,
+      method: item.method,
+    });
   }
 
   removeHistoryItem (index) {
-    this.setState({ history: this.state.history.filter((h,i) => i !== index) }, () => this.setSelected(this.state.selectedIndex));
+    const newHistory = this.state.history.filter((h,i) => i !== index);
+    const newSelectedIndex = Math.max(0, Math.min(this.state.selectedIndex, this.state.history.length - 1));
+    this.setState({
+      history: newHistory,
+      selectedIndex: newSelectedIndex,
+    }, () => this.setSelected(this.state.selectedIndex));
   }
 
   componentDidUpdate () {
@@ -143,11 +150,14 @@ class App extends React.Component {
           </div>
           <div className="App-Response">
             <h2>Response</h2>
-            <code className="App-Response-Headers">
-              {
-                selected && [...selected.headers].map(([key, value]) => `${key}: ${value}`).join("\n")
-              }
-            </code>
+            { selected && <div>Response Time: { selected.duration}ms</div> }
+            { 
+              selected && <code className="App-Response-Headers">
+                {
+                  [...selected.headers].map(([key, value]) => `${key}: ${value}`).join("\n")
+                }
+              </code> 
+            }
             <div className="App-Response-body" style={{ backgroundColor: this.state.loading ? "#CCC" : "" }}>
               <ResponseBody response={selected} onDrillDown={id => this.setState({ endpoint: `${this.state.endpoint}/${id}` }, () => this.sendQuery())} />
             </div>

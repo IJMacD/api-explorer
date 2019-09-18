@@ -56,7 +56,7 @@ function JSONBody ({ children, onDrillDown }) {
 function formatObject (object, { key=null, onDrillDown=null }) {
     if (Array.isArray(object)) {
         return (
-            <div key={key}>
+            <div key={key} className="JSONBody-array">
                 <p>{`Array of ${object.length} items`}</p>
                 { object.map((d,i) => formatObject(d, { key: i, onDrillDown })) }
             </div>
@@ -85,7 +85,7 @@ function formatObject (object, { key=null, onDrillDown=null }) {
     }
 
     if (typeof object === "boolean") {
-        return <div key={key} className={`JSONBody-boolean`}>{object?"true":"false"}</div>;
+        return <div key={key} className="JSONBody-boolean">{object?"true":"false"}</div>;
     }
 
     return <div key={key} className={`JSONBody-${typeof object}`}>{object}</div>;
