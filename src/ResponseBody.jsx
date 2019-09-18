@@ -4,6 +4,19 @@ import './ResponseBody.css';
 export default function ResponseBody ({ response, onDrillDown }) {
     const [ mode, setMode ] = React.useState("plain");
 
+    React.useEffect(() => {
+        if (!response) {
+            return;
+        }
+
+        const type = getHeader(response.headers, "Content-Type");
+        if (type === "application/json") {
+            setMode("json");
+        } else {
+            setMode("plain");
+        }
+    }, [response]);
+
     if (!response) {
         return null;
     }
@@ -12,7 +25,7 @@ export default function ResponseBody ({ response, onDrillDown }) {
 
     const type = getHeader(response.headers, "Content-Type");
     if (type === "application/json") {
-        availableModes.push("json");
+        availableModes.unshift("json");
     }
 
     return (

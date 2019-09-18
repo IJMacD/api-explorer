@@ -33,21 +33,35 @@ class App extends React.Component {
     const { endpoint, method } = this.state;
     const url = this.state.apiRoot + endpoint;
 
-    this.setState({ loading: true });
-    const r = await fetch(url);
-    const body = await r.text();
+    try {
+      this.setState({ loading: true });
+      const r = await fetch(url, { method });
+      const body = await r.text();
 
-    this.setState({
-      loading: false,
-      history: [ {
-        endpoint,
-        method,
-        status: r.status,
-        headers: [...r.headers],
-        body
-      }, ...this.state.history ],
-      selectedIndex: 0,
-    });
+      this.setState({
+        loading: false,
+        history: [ {
+          endpoint,
+          method,
+          status: r.status,
+          headers: [...r.headers],
+          body
+        }, ...this.state.history ],
+        selectedIndex: 0,
+      });
+    } catch (e) {
+      this.setState({
+        loading: false,
+        history: [ {
+          endpoint,
+          method,
+          status: "error",
+          headers: [],
+          body: null
+        }, ...this.state.history ],
+        selectedIndex: 0,
+      });
+    }
   }
 
   setSelected (index) {
@@ -61,8 +75,13 @@ class App extends React.Component {
     }
   }
 
+  removeHistoryItem (index) {
+    this.setState({ history: this.state.history.filter((h,i) => i !== index) }, () => this.setSelected(this.state.selectedIndex));
+  }
+
   componentDidUpdate () {
-    saveState(STORAGE_KEY, this.state);
+    const { loading, ...toSave } = this.state;
+    saveState(STORAGE_KEY, toSave);
   }
 
   render () {
@@ -81,11 +100,29 @@ class App extends React.Component {
             <ul className="App-HistoryList">
               {
                 this.state.history.map((h,i) => {
-                  return <li key={i} className={selectedIndex === i ? "selected" : ""} onClick={()=>this.setSelected(i)}>
-                    <span className="badge badge-get">{h.method}</span>
-                    <span className="App-HistoryList-endpoint">/{h.endpoint}</span>
-                    <span className="App-HistoryList-status">{h.status}</span>
-                  </li>
+                  return (
+                    <li 
+                      key={i}
+                      className={`${selectedIndex === i ? "selected" : ""} status-${h.status}`}
+                      onClick={()=>this.setSelected(i)}
+                    >
+                      <div className="App-HistoryList-title">
+                        <span className={`badge badge-${h.method.toLowerCase()}`}>{h.method}</span>
+                        <span className="App-HistoryList-endpoint">/{h.endpoint}</span>
+                        <span className="App-HistoryList-status" style={/[45]\d\d/.test(h.status) ? { color: "red" } : null}>{h.status}</span>
+                      </div>
+                      {
+                        selectedIndex === i && (
+                          <div>
+                            <a href={`${this.state.apiRoot}${h.endpoint}`} target="_blank">link</a>
+                            <a href="#" onClick={() => navigator.clipboard.writeText(`curl${h.method !== "GET" ? ` -X ${h.method}` : ''} ${this.state.apiRoot}${h.endpoint}`)}>curl</a>
+                            <a href="#" onClick={() => this.removeHistoryItem(i)}>remove</a>
+                            <a href="#" onClick={() => (this.removeHistoryItem(i), this.sendQuery())}>refresh</a>
+                          </div>
+                        )
+                      }
+                    </li>
+                  );
                 })
               }
             </ul>

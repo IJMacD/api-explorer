@@ -31,3 +31,7 @@
 .JSONBody-number {
     color: blue;
 }
+
+.JSONBody-boolean {
+    color: maroon;
+}

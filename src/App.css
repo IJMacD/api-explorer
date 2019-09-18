@@ -4,6 +4,10 @@
   flex-direction: column;
 }
 
+.App > label {
+  padding: 8px;
+}
+
 .App-apiroot {
   width: 400px;
 }
@@ -12,6 +16,10 @@
   height: 100%;
   display: flex;
   flex: 1;
+}
+
+.App-panels h2 {
+  margin: 0;
 }
 
 .App-History {
@@ -26,6 +34,7 @@
 
 .App-Request-url {
   display: flex;
+  margin: 4px 0;
 }
 
 .App-Request-url input {
@@ -58,7 +67,6 @@
   margin: 4px;
   padding: 8px;
   border: 1px solid #CCC;
-  display: flex;
   cursor: pointer;
   transition: 0.25s all;
 }
@@ -69,6 +77,19 @@
 
 .App-HistoryList li.selected {
   border-color: #333;
+}
+
+.App-HistoryList li.status-error {
+  background-color: lightcoral;
+  border-color: crimson;
+}
+
+.App-HistoryList-title {
+  display: flex;
+}
+
+.App-HistoryList a {
+  margin-right: 4px;
 }
 
 .App-HistoryList-endpoint {
@@ -83,9 +104,21 @@
 .badge {
   color: white;
   border-radius: 3px;
+  padding: 0px 4px 2px;
 }
 
 .badge-get {
   background-color: green;
-  padding: 0px 4px 2px;
+}
+.badge-post {
+  background-color: purple;
+}
+.badge-put {
+  background-color: blue;
+}
+.badge-delete {
+  background-color: red;
+}
+.badge-option {
+  background-color: gray;
 }
